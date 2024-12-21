@@ -45,7 +45,7 @@ medical-appointments/
 
 ## Configuración del Entorno
 Base de Datos: [medical_db.sql](..%2FUsers%2Fmadel%2FDownloads%2Fmedical_db.sql)
-
+ 
 ## Documentación API
 
 ## Equipo de Desarrollo
