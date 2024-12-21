@@ -44,7 +44,7 @@ medical-appointments/
 4. Servidor SQL
 
 ## Configuración del Entorno
-Base de Datos: [medical_db.sql](..%2FUsers%2Fmadel%2FDownloads%2Fmedical_db.sql)
+Base de Datos: [medical_db.sql](https://drive.google.com/file/d/15XDPJZthvnUaWPZv31fyeDjZ-MsQkAqs/view?usp=sharing)
 
 ## Documentación API
 
