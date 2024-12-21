@@ -16,12 +16,12 @@ import java.time.LocalDateTime;
 
 /**
  *
- * @author Torres
+ * @author Torres, Maddiekc
  */
 
 @Entity
 @Table(name = "citas")
-class Cita {
+public class Cita {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
