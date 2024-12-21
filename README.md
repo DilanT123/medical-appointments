@@ -25,9 +25,9 @@ medical-appointments/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/ups/medical/
-│   │   │   ├── controllers/    # Controladores REST
+│   │   │   ├── com.ups.medical.controllers/    # Controladores REST
 │   │   │   ├── models/         # Entidades y modelos
-│   │   │   ├── repositories/   # Interfaces de repositorio
+│   │   │   ├── com.ups.medical.repositories/   # Interfaces de repositorio
 │   │   │   ├── services/       # Lógica de negocio
 │   │   │   └── security/       # Configuración de seguridad
 │   │   └── resources/
@@ -44,6 +44,7 @@ medical-appointments/
 4. Servidor SQL
 
 ## Configuración del Entorno
+Base de Datos: [medical_db.sql](..%2FUsers%2Fmadel%2FDownloads%2Fmedical_db.sql)
 
 ## Documentación API
 
