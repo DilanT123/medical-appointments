@@ -47,6 +47,9 @@ class Cita {
     
     @OneToOne(mappedBy = "cita", cascade = CascadeType.ALL)
     private HistorialMedico historialMedico;
+    
+    @OneToOne(mappedBy = "cita", cascade = CascadeType.ALL)
+    private RecetaMedica recetaMedica;
 
     // Enum para el estado de la cita
     public enum EstadoCita {
@@ -59,7 +62,7 @@ class Cita {
     // Constructores
     public Cita() {}
 
-    public Cita(Long id, LocalDateTime fechaHora, String motivo, EstadoCita estado, Doctor doctor, Paciente paciente, HistorialMedico historialMedico) {
+    public Cita(Long id, LocalDateTime fechaHora, String motivo, EstadoCita estado, Doctor doctor, Paciente paciente, HistorialMedico historialMedico, RecetaMedica recetaMedica) {
         this.id = id;
         this.fechaHora = fechaHora;
         this.motivo = motivo;
@@ -67,8 +70,9 @@ class Cita {
         this.doctor = doctor;
         this.paciente = paciente;
         this.historialMedico = historialMedico;
+        this.recetaMedica = recetaMedica;
     }
-
+    
     public Cita(LocalDateTime fechaHora, String motivo, EstadoCita estado, Doctor doctor, Paciente paciente) {
         this.fechaHora = fechaHora;
         this.motivo = motivo;
@@ -78,6 +82,7 @@ class Cita {
     }
     
     // Getters and Setters
+
     public Long getId() {
         return id;
     }
@@ -133,5 +138,13 @@ class Cita {
     public void setHistorialMedico(HistorialMedico historialMedico) {
         this.historialMedico = historialMedico;
     }
-    
+
+    public RecetaMedica getRecetaMedica() {
+        return recetaMedica;
+    }
+
+    public void setRecetaMedica(RecetaMedica recetaMedica) {
+        this.recetaMedica = recetaMedica;
+    }
+       
 }
