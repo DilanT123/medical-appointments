@@ -56,6 +56,17 @@ public class Usuario {
         this.email = email;
         this.password = password;
     }
+
+    public Usuario(String nombre, String apellido, String cedula, String telefono, String email, String password) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.cedula = cedula;
+        this.telefono = telefono;
+        this.email = email;
+        this.password = password;
+    }
+    
+    
     
     // Getters and Setters
 
