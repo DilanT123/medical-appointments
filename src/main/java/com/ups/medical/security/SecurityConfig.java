@@ -20,16 +20,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(csrf -> csrf.disable())  // Desactiva CSRF si no es necesario
             .authorizeHttpRequests(auth -> auth
-                // Permitir acceso a Swagger UI
-                .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
-                // Permitir acceso al endpoint de registro
-                .requestMatchers("/api/usuarios/**").permitAll()
-                // Cualquier otra ruta requiere autenticación
-                .anyRequest().authenticated()
-            );
-        
+                .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll() // Swagger accesible sin autenticación
+                .requestMatchers("/api/usuarios/**").permitAll() // Acceso libre a los endpoints de registro de usuario
+                .requestMatchers("/api/controlador/**").permitAll() // Permite acceso sin autenticación al endpoint del controlador
+                .anyRequest().authenticated()  // Requiere autenticación para cualquier otro endpoint
+            )
+            .cors().and();  // Habilita CORS (si es necesario)
+
         return http.build();
     }
 
