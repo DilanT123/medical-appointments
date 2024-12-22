@@ -2,6 +2,7 @@ package com.ups.medical.controllers;
 
 import com.ups.medical.models.Cita;
 import com.ups.medical.repositories.CitaRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,11 +11,12 @@ import java.util.List;
 
 /**
  *
- * @author Maddiekc
+ * @author Maddiekc, DilanT123
  */
 
 @RestController
 @RequestMapping("/api/cita")
+@Tag(name = "Citas Médicas", description = "API para la gestión de citas médicas")
 public class CitaController {
 
     @Autowired
