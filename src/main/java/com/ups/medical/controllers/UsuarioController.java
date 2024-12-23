@@ -1,7 +1,10 @@
 package com.ups.medical.controllers;
 
+import com.ups.medical.models.LoginRequest;
+import com.ups.medical.models.LoginResponse;
 import com.ups.medical.models.Usuario;
 import com.ups.medical.repositories.UsuarioRepository;
+import com.ups.medical.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.List;
+import org.springframework.http.HttpStatus;
 
 /**
  * Controlador para manejar las solicitudes relacionadas con Usuario.
@@ -23,6 +27,7 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
 
     @Operation(summary = "Obtener todos los usuarios", 
                description = "Retorna una lista de todos los usuarios registrados en el sistema")
@@ -120,4 +125,23 @@ public class UsuarioController {
             return ResponseEntity.notFound().build();
         }
     }
+    
+     private UsuarioService usuarioService;
+     @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            String token = usuarioService.autenticarUsuario(loginRequest.getUsername(), loginRequest.getPassword());
+            return ResponseEntity.ok(new LoginResponse("Login exitoso", token));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse(e.getMessage(), null));
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
 }

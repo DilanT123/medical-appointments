@@ -12,6 +12,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -42,5 +47,17 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    
+    // Configuración de CORS personalizada
+    
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")  // Habilita CORS para todos los endpoints
+                .allowedOrigins("http://localhost:3000")  // Ajusta según el origen de tu frontend
+                .allowedMethods("GET", "POST", "PUT", "DELETE")  // Métodos permitidos
+                .allowedHeaders("Authorization", "Content-Type")  // Cabeceras permitidas
+                .allowCredentials(true);  // Permite el uso de credenciales (como cookies)
+    }
+    
+    
     
 }
