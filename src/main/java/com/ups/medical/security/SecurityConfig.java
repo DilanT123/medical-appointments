@@ -25,9 +25,15 @@ public class SecurityConfig {
                 .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll() // Swagger accesible sin autenticación
                 .requestMatchers("/api/usuarios/**").permitAll() // Acceso libre a los endpoints de registro de usuario
                 .requestMatchers("/api/controlador/**").permitAll() // Permite acceso sin autenticación al endpoint del controlador
+                .requestMatchers("/api/cita/**").permitAll()  // Permite acceso a todas las rutas de /api/cita
+                .requestMatchers("/api/doctor/**").permitAll()  // Permite acceso a todas las rutas de /api/doctor
+                .requestMatchers("/api/especialidad/**").permitAll()  // Permite acceso a todas las rutas de /api/especialidad
+                .requestMatchers("/api/historialMedico/**").permitAll()  // Permite acceso a todas las rutas de /api/historialMedico
+                .requestMatchers("/api/pacientes/**").permitAll()  // Permite acceso a todas las rutas de /api/pacientes
+                .requestMatchers("/api/recetas-medicas/**").permitAll()  // Permite acceso a todas las rutas de /api/recetas-medicas
                 .anyRequest().authenticated()  // Requiere autenticación para cualquier otro endpoint
             )
-            .cors().and();  // Habilita CORS (si es necesario)
+            .cors().and(); 
 
         return http.build();
     }
