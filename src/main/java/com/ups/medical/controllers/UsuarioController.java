@@ -28,55 +28,52 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private UsuarioService usuarioService;
 
-    @Operation(summary = "Obtener todos los usuarios", 
-               description = "Retorna una lista de todos los usuarios registrados en el sistema")
+    /**
+     * Obtener todos los usuarios registrados.
+     */
     @GetMapping
     public List<Usuario> getAllUsuarios() {
         return usuarioRepository.findAll();
     }
 
-    @Operation(summary = "Obtener usuario por ID",
-               description = "Retorna un usuario basado en su ID")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
+    /**
+     * Obtener usuario por ID.
+     */
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> getUsuarioById(
-            @Parameter(description = "ID del usuario", required = true)
-            @PathVariable Long id) {
+    public ResponseEntity<Usuario> getUsuarioById(@PathVariable Long id) {
         return usuarioRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Crear nuevo usuario",
-               description = "Crea un nuevo usuario en el sistema")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario creado exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Datos de usuario inválidos")
-    })
+    /**
+     * Crear un nuevo usuario.
+     */
     @PostMapping
-    public Usuario createUsuario(
-            @Parameter(description = "Datos del usuario a crear", required = true)
-            @RequestBody Usuario usuario) {
-        return usuarioRepository.save(usuario);
+    public ResponseEntity<Usuario> createUsuario(@RequestBody Usuario usuario) {
+        // Verificar si ya existe un usuario con el mismo username o email
+        if (usuarioRepository.existsByUsername(usuario.getUsername())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        // Guardar el nuevo usuario
+        Usuario savedUsuario = usuarioRepository.save(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUsuario);
     }
 
-    @Operation(summary = "Actualizar usuario",
-               description = "Actualiza la información de un usuario existente")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado"),
-        @ApiResponse(responseCode = "400", description = "Datos de usuario inválidos")
-    })
+    /**
+     * Actualizar un usuario existente.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<Usuario> updateUsuario(
-            @Parameter(description = "ID del usuario", required = true)
-            @PathVariable Long id,
-            @Parameter(description = "Nuevos datos del usuario", required = true)
-            @RequestBody Usuario usuarioDetails) {
+            @PathVariable Long id, @RequestBody Usuario usuarioDetails) {
         return usuarioRepository.findById(id)
                 .map(usuario -> {
                     usuario.setNombre(usuarioDetails.getNombre());
@@ -90,16 +87,11 @@ public class UsuarioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Eliminar usuario",
-               description = "Elimina un usuario del sistema")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Usuario eliminado exitosamente"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
+    /**
+     * Eliminar un usuario.
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUsuario(
-            @Parameter(description = "ID del usuario a eliminar", required = true)
-            @PathVariable Long id) {
+    public ResponseEntity<Object> deleteUsuario(@PathVariable Long id) {
         return usuarioRepository.findById(id)
                 .map(usuario -> {
                     usuarioRepository.delete(usuario);
@@ -108,16 +100,11 @@ public class UsuarioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Buscar usuario por email",
-               description = "Busca un usuario por su dirección de correo electrónico")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Usuario encontrado"),
-        @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
-    })
+    /**
+     * Buscar usuario por email.
+     */
     @GetMapping("/buscar")
-    public ResponseEntity<Usuario> getUsuarioByEmail(
-            @Parameter(description = "Email del usuario", required = true)
-            @RequestParam String email) {
+    public ResponseEntity<Usuario> getUsuarioByEmail(@RequestParam String email) {
         Usuario usuario = usuarioRepository.findByEmail(email);
         if (usuario != null) {
             return ResponseEntity.ok(usuario);
@@ -125,9 +112,11 @@ public class UsuarioController {
             return ResponseEntity.notFound().build();
         }
     }
-    
-     private UsuarioService usuarioService;
-     @PostMapping("/login")
+
+    /**
+     * Login de usuario.
+     */
+    @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
             String token = usuarioService.autenticarUsuario(loginRequest.getUsername(), loginRequest.getPassword());
@@ -136,5 +125,4 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse(e.getMessage(), null));
         }
     }
- 
 }

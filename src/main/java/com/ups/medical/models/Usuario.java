@@ -53,7 +53,7 @@ public class Usuario {
     @Column(nullable = false)
     @NotBlank(message = "La contraseña no puede estar vacía")
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
-    @JsonIgnore
+    // Elimina la anotación @JsonIgnore para que la contraseña se incluya en el JSON
     private String password;
     
     @Column(nullable = false, unique = true)
@@ -61,40 +61,18 @@ public class Usuario {
     private String username;
 
     // Constructores
+    public Usuario(String apellido, String cedula, String email, String nombre, String password, String telefono, String username) {
+        this.apellido = apellido;
+        this.cedula = cedula;
+        this.email = email;
+        this.nombre = nombre;
+        this.password = password;
+        this.telefono = telefono;
+        this.username = username;
+    }
+    
     public Usuario() {}
 
-    public Usuario(Long id, String username, String nombre, String apellido, String cedula, String telefono, String email, String password) {
-        this.id = id;
-        this.username = username;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.cedula = cedula;
-        this.telefono = telefono;
-        this.email = email;
-        this.password = password;
-    }
-
-    public Usuario(String nombre, String apellido, String cedula, String telefono, String email, String password) {
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.cedula = cedula;
-        this.telefono = telefono;
-        this.email = email;
-        this.password = password;
-    }
-
-    public Usuario(String username, String nombre, String apellido, String cedula, String telefono, String email, String password) {
-        this.username = username;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.cedula = cedula;
-        this.telefono = telefono;
-        this.email = email;
-        this.password = password;
-    }
-    
-    
-        
     // Getters and Setters
 
     public Long getId() {
@@ -160,6 +138,4 @@ public class Usuario {
     public void setPassword(String password) {
         this.password = password;
     }
-    
-      
 }

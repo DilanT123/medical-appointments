@@ -23,7 +23,7 @@ public class UsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private static final String SECRET_KEY = "miClaveSecreta";  // Usa una clave secreta segura
+    private static final String SECRET_KEY = "miClaveSecreta";  
 
     // Método para autenticar al usuario y generar el token JWT
     public String autenticarUsuario(String username, String password) throws Exception {
@@ -52,5 +52,22 @@ public class UsuarioService {
     // Método para obtener un usuario por su nombre de usuario
     public Optional<Usuario> obtenerUsuarioPorNombre(String username) {
         return Optional.ofNullable(usuarioRepository.findByUsername(username).orElse(null));
+    }
+
+    // Método para crear un nuevo usuario
+    public Usuario crearUsuario(Usuario usuario) throws Exception {
+        // Verificar si el username o email ya existen
+        if (usuarioRepository.existsByUsername(usuario.getUsername())) {
+            throw new Exception("El nombre de usuario ya está en uso");
+        }
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+            throw new Exception("El correo electrónico ya está registrado");
+        }
+
+        // Encriptar la contraseña
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+
+        // Guardar el usuario en la base de datos
+        return usuarioRepository.save(usuario);
     }
 }
