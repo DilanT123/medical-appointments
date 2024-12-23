@@ -136,12 +136,5 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new LoginResponse(e.getMessage(), null));
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
+ 
 }

@@ -1,63 +1,79 @@
 package com.ups.medical.security;
 
-/**
- *
- * @author Torres
- */
-
+import com.ups.medical.services.UsuarioService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
+
+    @Value("${spring.security.user.name}")
+    private String adminUsername;
+
+    @Value("${spring.security.user.password}")
+    private String adminPassword;
+
+    private static final String[] PUBLIC_URLS = {
+        "/swagger-ui/**",
+        "/api-docs/**",
+        "/swagger-ui.html",
+        "/api/usuarios/**", 
+        "/api/controlador/**",
+        "/api/cita/**",
+        "/api/doctor/**",
+        "/api/especialidad/**",
+        "/api/historialMedico/**",
+        "/api/pacientes/**",
+        "/api/recetas-medicas/**"
+    };
+
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider, UsuarioService usuarioService) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())  // Desactiva CSRF si no es necesario
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll() // Swagger accesible sin autenticación
-                .requestMatchers("/api/usuarios/**").permitAll() // Acceso libre a los endpoints de registro de usuario
-                .requestMatchers("/api/controlador/**").permitAll() // Permite acceso sin autenticación al endpoint del controlador
-                .requestMatchers("/api/cita/**").permitAll()  // Permite acceso a todas las rutas de /api/cita
-                .requestMatchers("/api/doctor/**").permitAll()  // Permite acceso a todas las rutas de /api/doctor
-                .requestMatchers("/api/especialidad/**").permitAll()  // Permite acceso a todas las rutas de /api/especialidad
-                .requestMatchers("/api/historialMedico/**").permitAll()  // Permite acceso a todas las rutas de /api/historialMedico
-                .requestMatchers("/api/pacientes/**").permitAll()  // Permite acceso a todas las rutas de /api/pacientes
-                .requestMatchers("/api/recetas-medicas/**").permitAll()  // Permite acceso a todas las rutas de /api/recetas-medicas
-                .anyRequest().authenticated()  // Requiere autenticación para cualquier otro endpoint
-            )
-            .cors().and(); 
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                .requestMatchers(PUBLIC_URLS).permitAll()
+                .anyRequest().authenticated()
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, usuarioService), UsernamePasswordAuthenticationFilter.class); // Se inyectan ambas dependencias
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials"));
+        configuration.setAllowCredentials(false);
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
-    // Configuración de CORS personalizada
-    
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")  // Habilita CORS para todos los endpoints
-                .allowedOrigins("http://localhost:3000")  // Ajusta según el origen de tu frontend
-                .allowedMethods("GET", "POST", "PUT", "DELETE")  // Métodos permitidos
-                .allowedHeaders("Authorization", "Content-Type")  // Cabeceras permitidas
-                .allowCredentials(true);  // Permite el uso de credenciales (como cookies)
-    }
-    
-    
-    
 }

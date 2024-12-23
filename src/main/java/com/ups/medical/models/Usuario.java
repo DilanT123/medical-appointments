@@ -1,5 +1,6 @@
 package com.ups.medical.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,6 +9,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 /**
  *
@@ -19,36 +24,48 @@ import jakarta.persistence.Table;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Usuario {
     // Atributos
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @Column(nullable = false)
+    @NotBlank(message = "El nombre no puede estar vacío")
     private String nombre;
-    
+
     @Column(nullable = false)
+    @NotBlank(message = "El apellido no puede estar vacío")
     private String apellido;
-    
+
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "La cédula no puede estar vacía")
     private String cedula;
-    
+
     @Column(nullable = false)
+    @NotBlank(message = "El teléfono no puede estar vacío")
+    @Pattern(regexp = "\\d{10}", message = "El teléfono debe contener exactamente 10 dígitos")
     private String telefono;
-    
+
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "El email no puede estar vacío")
+    @Email(message = "Debe proporcionar un email válido")
     private String email;
-    
+
     @Column(nullable = false)
+    @NotBlank(message = "La contraseña no puede estar vacía")
+    @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
+    @JsonIgnore
     private String password;
     
-    // Constructores
+    @Column(nullable = false, unique = true)
+    @NotBlank(message = "El nombre de usuario no puede estar vacío")
+    private String username;
 
+    // Constructores
     public Usuario() {}
 
-    public Usuario(Long id, String nombre, String apellido, String cedula, String telefono, String email, String password) 
-    {
+    public Usuario(Long id, String username, String nombre, String apellido, String cedula, String telefono, String email, String password) {
         this.id = id;
+        this.username = username;
         this.nombre = nombre;
         this.apellido = apellido;
         this.cedula = cedula;
@@ -65,9 +82,19 @@ public class Usuario {
         this.email = email;
         this.password = password;
     }
+
+    public Usuario(String username, String nombre, String apellido, String cedula, String telefono, String email, String password) {
+        this.username = username;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.cedula = cedula;
+        this.telefono = telefono;
+        this.email = email;
+        this.password = password;
+    }
     
     
-    
+        
     // Getters and Setters
 
     public Long getId() {
@@ -76,6 +103,14 @@ public class Usuario {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getNombre() {
@@ -125,5 +160,6 @@ public class Usuario {
     public void setPassword(String password) {
         this.password = password;
     }
-        
+    
+      
 }
