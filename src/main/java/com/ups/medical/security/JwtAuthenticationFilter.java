@@ -18,7 +18,7 @@ import java.util.Optional;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UsuarioService usuarioService;  // Inyectamos el servicio de usuarios
+    private final UsuarioService usuarioService;
 
     public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, UsuarioService usuarioService) {
         this.jwtTokenProvider = jwtTokenProvider;
@@ -34,23 +34,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (token != null && jwtTokenProvider.validateToken(token)) {
             String username = jwtTokenProvider.getUsernameFromToken(token);
 
-            // Recuperamos al usuario desde la base de datos
-            usuarioService.obtenerUsuarioPorNombre(username).ifPresent(usuario -> {
+            // Verificar si el usuario existe en la base de datos antes de autenticarlo
+            Optional<Usuario> usuarioOptional = usuarioService.obtenerUsuarioPorNombre(username);
+            if (usuarioOptional.isPresent()) {
+                Usuario usuario = usuarioOptional.get();
+
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        username, null, new ArrayList<>());
+                        username, null, new ArrayList<>());  // No es necesario establecer las credenciales
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                // Establecer autenticación en el contexto de seguridad
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            });
+            }
         }
 
         filterChain.doFilter(request, response);
     }
 
-    // Método para extraer el token JWT de la cabecera Authorization
     private String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7); // Extrae el token sin la palabra 'Bearer'
+            return bearerToken.substring(7);  // Extraer el token sin la palabra 'Bearer'
         }
         return null;
     }

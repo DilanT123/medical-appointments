@@ -19,52 +19,30 @@ import java.util.List;
 
 @Entity
 @Table(name = "pacientes")
-public class Paciente {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    @Column(nullable = false)
+public class Paciente extends Usuario {
+
     private String genero;
-    
-    @Column(nullable = false)
     private LocalDate fechaNacimiento;
-    
-    @Column
     private String tipoSangre;
-    
+
     @OneToMany(mappedBy = "paciente")
     private List<Cita> citas;
-    
+
     @OneToOne(mappedBy = "paciente", cascade = CascadeType.ALL)
     private HistorialMedico historialMedico;
-    
+
     // Constructores
-    public Paciente() {}
+    public Paciente() {
+        super(); // Llama al constructor vacío de Usuario
+    }
 
-    public Paciente(String genero, LocalDate fechaNacimiento, String tipoSangre) {
+    public Paciente(
+            String nombre, String apellido, String cedula, String telefono, String email, String password, String username,
+            String genero, LocalDate fechaNacimiento, String tipoSangre) {
+        super(nombre, apellido, cedula, telefono, email, password, username); // Inicializa atributos de Usuario
         this.genero = genero;
         this.fechaNacimiento = fechaNacimiento;
         this.tipoSangre = tipoSangre;
-    }
-       
-    public Paciente(Long id, String genero, LocalDate fechaNacimiento, String tipoSangre, List<Cita> citas, HistorialMedico historialMedico) {
-        this.id = id;
-        this.genero = genero;
-        this.fechaNacimiento = fechaNacimiento;
-        this.tipoSangre = tipoSangre;
-        this.citas = citas;
-        this.historialMedico = historialMedico;
-    }
-    
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getGenero() {

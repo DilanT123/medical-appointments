@@ -18,27 +18,14 @@ import java.util.List;
 
 @Entity
 @Table(name = "doctors")
-public class Doctor {
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idDoctor;
-    
-    @Column(nullable = false)
-    private String nombre;
-    
-    @Column(nullable = false)
-    private String apellido;
-     
-    @Column(nullable = false)
-    private String numeroLicencia;
+public class Doctor extends Usuario {
 
-    @Column(nullable = false)
+    private String numeroLicencia;
     private String horarioAtencion;
-    
+
     @OneToMany(mappedBy = "doctor")
     private List<Cita> citas;
-    
+
     @ManyToOne
     @JoinColumn(name = "especialidad_id", nullable = false)
     private Especialidad especialidad;
@@ -46,46 +33,20 @@ public class Doctor {
     @ManyToOne
     @JoinColumn(name = "consultorio_id", nullable = false)
     private Consultorio consultorio;
-    
-    //Constructores
 
-    public Doctor() {}
+    // Constructores
+    public Doctor() {
+        super(); // Llama al constructor vacío de Usuario
+    }
 
-    public Doctor(int idDoctor, String nombre, String apellido, String numeroLicencia, String horarioAtencion, List<Cita> citas, Especialidad especialidad, Consultorio consultorio) {
-        this.idDoctor = idDoctor;
-        this.nombre = nombre;
-        this.apellido = apellido;
+    public Doctor(
+            String nombre, String apellido, String cedula, String telefono, String email, String password, String username,
+            String numeroLicencia, String horarioAtencion, Especialidad especialidad, Consultorio consultorio) {
+        super(nombre, apellido, cedula, telefono, email, password, username); // Inicializa atributos de Usuario
         this.numeroLicencia = numeroLicencia;
         this.horarioAtencion = horarioAtencion;
-        this.citas = citas;
         this.especialidad = especialidad;
         this.consultorio = consultorio;
-    }
-                    
-    // Getters and Setters
-
-    public int getIdDoctor() {
-        return idDoctor;
-    }
-
-    public void setIdDoctor(int idDoctor) {
-        this.idDoctor = idDoctor;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
     }
 
     public String getNumeroLicencia() {
@@ -127,5 +88,5 @@ public class Doctor {
     public void setConsultorio(Consultorio consultorio) {
         this.consultorio = consultorio;
     }
-        
+         
 }
