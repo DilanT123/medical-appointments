@@ -1,16 +1,15 @@
 package com.ups.medical.models;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
+import java.time.LocalDate;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDate;
-import java.util.List;
+
 
 /**
  *
@@ -18,31 +17,44 @@ import java.util.List;
  */
 
 @Entity
-@Table(name = "pacientes")
-public class Paciente extends Usuario {
+public class Paciente {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String genero;
+
     private LocalDate fechaNacimiento;
+
     private String tipoSangre;
 
-    @OneToMany(mappedBy = "paciente")
-    private List<Cita> citas;
-
-    @OneToOne(mappedBy = "paciente", cascade = CascadeType.ALL)
-    private HistorialMedico historialMedico;
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 
     // Constructores
     public Paciente() {
-        super(); // Llama al constructor vacío de Usuario
     }
 
-    public Paciente(
-            String nombre, String apellido, String cedula, String telefono, String email, String password, String username,
-            String genero, LocalDate fechaNacimiento, String tipoSangre) {
-        super(nombre, apellido, cedula, telefono, email, password, username); // Inicializa atributos de Usuario
+    public Paciente(String genero, LocalDate fechaNacimiento, String tipoSangre, Usuario usuario) {
         this.genero = genero;
         this.fechaNacimiento = fechaNacimiento;
         this.tipoSangre = tipoSangre;
+        this.usuario = usuario;
+    }
+
+    public Paciente(String nombre, String apellido, String cedula, String telefono, String email, String password, String username, String genero, LocalDate fechaNacimiento, String tipoSangre) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    // Getters y Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getGenero() {
@@ -69,21 +81,11 @@ public class Paciente extends Usuario {
         this.tipoSangre = tipoSangre;
     }
 
-    public List<Cita> getCitas() {
-        return citas;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setCitas(List<Cita> citas) {
-        this.citas = citas;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
-
-    public HistorialMedico getHistorialMedico() {
-        return historialMedico;
-    }
-
-    public void setHistorialMedico(HistorialMedico historialMedico) {
-        this.historialMedico = historialMedico;
-    }
-    
-    
 }

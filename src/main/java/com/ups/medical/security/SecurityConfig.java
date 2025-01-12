@@ -31,21 +31,21 @@ public class SecurityConfig {
         "/api/doctor/**",
         "/api/especialidad/**",
         "/api/historialMedico/**",
-        "/api/pacientes/**",
-        "/api/recetas-medicas/**"
+        "/api/pacientes/**", // Incluye todas las rutas de pacientes
+        "/api/pacientes/**/**" // Rutas anidadas o dinámicas (si aplica)
     };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, JwtTokenProvider jwtTokenProvider, UsuarioService usuarioService) throws Exception {
         http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // Habilitar CORS
-            .csrf(csrf -> csrf.disable())  // Deshabilitar CSRF
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))  // Sin sesiones
-            .authorizeRequests(auth -> auth
-                .requestMatchers(PUBLIC_URLS).permitAll()  // Permitir acceso sin autenticación
-                .anyRequest().authenticated()  // Requiere autenticación para el resto
-            )
-            .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, usuarioService), UsernamePasswordAuthenticationFilter.class);  // Filtro JWT
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Habilitar CORS
+                .csrf(csrf -> csrf.disable()) // Deshabilitar CSRF
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sin sesiones
+                .authorizeRequests(auth -> auth
+                .requestMatchers(PUBLIC_URLS).permitAll() // Permitir acceso sin autenticación
+                .anyRequest().authenticated() // Requiere autenticación para el resto
+                )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, usuarioService), UsernamePasswordAuthenticationFilter.class);  // Filtro JWT
 
         return http.build();
     }
