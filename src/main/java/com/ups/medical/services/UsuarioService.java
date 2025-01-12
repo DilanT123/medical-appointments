@@ -8,8 +8,10 @@ import com.ups.medical.models.Usuario;
 import com.ups.medical.repositories.UsuarioRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import java.util.Date;
 import java.util.Optional;
+import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,7 @@ public class UsuarioService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    private static final String SECRET_KEY = "miClaveSecreta";  
+    private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     // Método para autenticar al usuario y generar el token JWT
     public String autenticarUsuario(String username, String password) throws Exception {
@@ -45,13 +47,13 @@ public class UsuarioService {
                 .setSubject(usuario.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 86400000)) // Expiración de 1 día
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(SECRET_KEY)
                 .compact();
     }
 
     // Método para obtener un usuario por su nombre de usuario
     public Optional<Usuario> obtenerUsuarioPorNombre(String username) {
-        return Optional.ofNullable(usuarioRepository.findByUsername(username).orElse(null));
+        return usuarioRepository.findByUsername(username);
     }
 
     // Método para crear un nuevo usuario
@@ -65,9 +67,16 @@ public class UsuarioService {
         }
 
         // Encriptar la contraseña
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        String encodedPassword = passwordEncoder.encode(usuario.getPassword());
+        usuario.setPassword(encodedPassword);
 
         // Guardar el usuario en la base de datos
         return usuarioRepository.save(usuario);
     }
+
+    // Método para codificar la contraseña
+    public String encodePassword(String password) {
+        return passwordEncoder.encode(password);
+    }
+
 }

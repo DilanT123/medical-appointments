@@ -62,25 +62,6 @@ public class Cita {
     // Constructores
     public Cita() {}
 
-    public Cita(Long id, LocalDateTime fechaHora, String motivo, EstadoCita estado, Doctor doctor, Paciente paciente, HistorialMedico historialMedico, RecetaMedica recetaMedica) {
-        this.id = id;
-        this.fechaHora = fechaHora;
-        this.motivo = motivo;
-        this.estado = estado;
-        this.doctor = doctor;
-        this.paciente = paciente;
-        this.historialMedico = historialMedico;
-        this.recetaMedica = recetaMedica;
-    }
-    
-    public Cita(LocalDateTime fechaHora, String motivo, EstadoCita estado, Doctor doctor, Paciente paciente) {
-        this.fechaHora = fechaHora;
-        this.motivo = motivo;
-        this.estado = estado;
-        this.doctor = doctor;
-        this.paciente = paciente;
-    }
-    
     // Getters and Setters
 
     public Long getId() {
