@@ -6,6 +6,7 @@ import com.ups.medical.models.Especialidad;
 import com.ups.medical.repositories.ConsultRepository;
 import com.ups.medical.repositories.DoctorRespository;
 import com.ups.medical.repositories.EspecialidadRepository;
+import com.ups.medical.repositories.RolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,14 +26,16 @@ public class DoctorController {
     private final DoctorRespository doctorRespository;
     private final EspecialidadRepository especialidadRepository;
     private final ConsultRepository consultorioRepository;
+    private final RolRepository rolRepository;
 
     @Autowired
-    public DoctorController(DoctorRespository doctorRespository, 
+    public DoctorController(DoctorRespository doctorRespository,
                             EspecialidadRepository especialidadRepository,
-                            ConsultRepository consultorioRepository) {
+                            ConsultRepository consultorioRepository, RolRepository rolRepository) {
         this.doctorRespository = doctorRespository;
         this.especialidadRepository = especialidadRepository;
         this.consultorioRepository = consultorioRepository;
+        this.rolRepository = rolRepository;
     }
 
     @Operation(summary = "Obtener todos los doctores")
@@ -56,18 +59,19 @@ public class DoctorController {
         Consultorio consultorio = findConsultorioById(doctorRequest.getConsultorio().getId());
 
         Doctor doctor = new Doctor(
-                doctorRequest.getNombre(),
-                doctorRequest.getApellido(),
-                doctorRequest.getCedula(),
-                doctorRequest.getTelefono(),
-                doctorRequest.getEmail(),
-                doctorRequest.getPassword(),
-                doctorRequest.getUsername(),
+                        doctorRequest.getNombre(),
+                        doctorRequest.getApellido(),
+                        doctorRequest.getCedula(),
+                        doctorRequest.getTelefono(),
+                        doctorRequest.getEmail(),
+                        doctorRequest.getPassword(),
+                        doctorRequest.getUsername(),
                 doctorRequest.getNumeroLicencia(),
                 doctorRequest.getHorarioAtencion(),
                 especialidad,
-                consultorio
-        );
+                consultorio,
+                doctorRequest.getRol()
+                );
 
         return ResponseEntity.ok(doctorRespository.save(doctor));
     }
