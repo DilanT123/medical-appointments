@@ -1,10 +1,6 @@
 package com.ups.medical.models;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -13,7 +9,7 @@ import java.util.List;
 
 /**
  *
- * @author Torres Dilan
+ * @author Torres, MaddiekC
  */
 
 @Entity
@@ -41,8 +37,8 @@ public class Doctor extends Usuario {
 
     public Doctor(
             String nombre, String apellido, String cedula, String telefono, String email, String password, String username,
-            String numeroLicencia, String horarioAtencion, Especialidad especialidad, Consultorio consultorio) {
-        super(nombre, apellido, cedula, telefono, email, password, username); // Inicializa atributos de Usuario
+            String numeroLicencia, String horarioAtencion, Especialidad especialidad, Consultorio consultorio, Rol rol_id) {
+        super(nombre, apellido, cedula, telefono, email, password, username, rol_id); // Inicializa atributos de Usuario
         this.numeroLicencia = numeroLicencia;
         this.horarioAtencion = horarioAtencion;
         this.especialidad = especialidad;

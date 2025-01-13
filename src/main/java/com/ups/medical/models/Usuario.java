@@ -1,14 +1,7 @@
 package com.ups.medical.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Inheritance;
-import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -16,7 +9,7 @@ import jakarta.validation.constraints.Size;
 
 /**
  *
- * @author Torres Dilan
+ * @author Torres, MaddiekC
  */
 
 @Entity
@@ -60,8 +53,12 @@ public class Usuario {
     @NotBlank(message = "El nombre de usuario no puede estar vacío")
     private String username;
 
+    @ManyToOne
+    @JoinColumn(name = "rol_id", nullable = false)
+    private Rol rol;
+
     // Constructores
-    public Usuario(String apellido, String cedula, String email, String nombre, String password, String telefono, String username) {
+    public Usuario(String apellido, String cedula, String email, String nombre, String password, String telefono, String username, Rol rol) {
         this.apellido = apellido;
         this.cedula = cedula;
         this.email = email;
@@ -69,6 +66,7 @@ public class Usuario {
         this.password = password;
         this.telefono = telefono;
         this.username = username;
+        this.rol = rol;
     }
     
     public Usuario() {}
@@ -137,5 +135,13 @@ public class Usuario {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
     }
 }

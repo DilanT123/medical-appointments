@@ -89,6 +89,7 @@ public class UsuarioController {
                     usuario.setTelefono(usuarioDetails.getTelefono());
                     usuario.setEmail(usuarioDetails.getEmail());
                     usuario.setPassword(usuarioDetails.getPassword());
+                    usuario.setRol(usuarioDetails.getRol());
                     return ResponseEntity.ok(usuarioRepository.save(usuario));
                 })
                 .orElse(ResponseEntity.notFound().build());
