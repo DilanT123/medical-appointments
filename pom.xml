@@ -62,7 +62,15 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
-        
+
+        <!-- Junit para pruebas -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Spring Boot DevTools -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -115,7 +123,12 @@
         <artifactId>spring-security-test</artifactId>
         <scope>test</scope>
     </dependency>
-        
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.10.1</version>
+        </dependency>
+
     </dependencies>
     
     <build>
